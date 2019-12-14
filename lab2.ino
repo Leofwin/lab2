@@ -21,13 +21,11 @@ bool isActivated = false;
 void setup()
 {
   buzzer.setMelody(notes, durations, melodyLength);
-  Serial.begin(115200);
 }
 
 void loop() 
 {
   float distance = readDistance();
-  Serial.println(distance);
   if (!isActivated && distance <= maxDistance) {
     isActivated = true;
     buzzer.turnSoundOn();
