@@ -2,16 +2,16 @@
 #include "pitches.h"
 #include "buzzer.h"
 
-#define PIN_BUZZER 6
-#define PIN_BUTTON 5
+#define PIN_BUZZER 33
+#define PIN_BUTTON 43
 
 const int sensorPin = A0;
 const float voltsPerMeasurement = 5.0/1024.0;
-const float maxDistance = 100.0;
+const float maxDistance = 20.0;
 
-const int notes[] = {NOTE_DS4, NOTE_SILENCE, NOTE_DS4, NOTE_SILENCE, NOTE_DS4, NOTE_SILENCE, NOTE_DS4, NOTE_SILENCE};
-const double durations[] = {1, 1, 1, 1, 1, 1, 1, 1};
-const int melodyLength = 8;
+const int notes[] = {NOTE_DS4, NOTE_SILENCE};
+const double durations[] = {1, 1};
+const int melodyLength = 2;
 
 Button button(PIN_BUTTON);
 Buzzer buzzer(PIN_BUZZER);
@@ -21,11 +21,13 @@ bool isActivated = false;
 void setup()
 {
   buzzer.setMelody(notes, durations, melodyLength);
+  Serial.begin(115200);
 }
 
 void loop() 
 {
   float distance = readDistance();
+  Serial.println(distance);
   if (!isActivated && distance <= maxDistance) {
     isActivated = true;
     buzzer.turnSoundOn();
@@ -41,8 +43,7 @@ void loop()
 
 float readDistance(){
   float volts = readAnalog() * voltsPerMeasurement;
-  // return 65 * pow(volts, -1.10); // for big IR sensor (SHARP 2Y0A02)
-  return pow(14.7737/volts, 1.2134); // for small IR sensor (SHARP 2Y0A21)
+  return pow(14.7737/volts, 1.2134);
 }
 
 float readAnalog()
